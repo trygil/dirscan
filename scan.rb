@@ -38,14 +38,13 @@ def scan(path)
         filehash = (Digest::SHA256.file filepath).to_s
 
         if !file_index.key?(filehash)
-            file_index[filehash] = []
+            file_index[filehash] = filepath
         end
 
         if !file_index_c.key?(filehash)
             file_index_c[filehash] = 0
         end
 
-        file_index[filehash] << filepath
         file_index_c[filehash] += 1
     }
 
@@ -58,7 +57,7 @@ def scan(path)
                 next
             end
 
-            filepath = file_index[keys[index]][0]
+            filepath = file_index[keys[index]]
 
             if !File.exists?(filepath)
                 next
