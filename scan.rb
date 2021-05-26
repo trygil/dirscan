@@ -1,6 +1,7 @@
 #!ruby
 
 require "digest"
+require "yaml"
 
 def list_files(path)
     filepaths = []
@@ -73,4 +74,27 @@ def scan(path)
     end
 end
 
-scan("./DropsuiteTest")
+
+if !File.exists?("./config.yml")
+    puts "No config file"
+    return
+end
+
+config_file = File.open("./config.yml")
+config = YAML.load(config_file.read)
+
+if !config.key?("paths") || !config["paths"].is_a?(Array)
+    puts "No path config"
+    return
+end
+
+config["paths"].each { |path|
+    if !Dir.exists?(path)
+        puts "path: \"#{path}\" doesn't exists"
+        next
+    end
+
+    scan(path)
+
+    print "\n"
+}
