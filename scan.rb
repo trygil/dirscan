@@ -47,4 +47,26 @@ filenames.each { |filepath|
     file_index_c[filehash] += 1
 }
 
-file_index_c.each { |key, c| puts "#{key}: #{c}"}
+keys = file_index_c.sort_by {|key, val| -val}.map {|item| item[0]}
+max = file_index_c.values.max
+
+if max > 1 && keys.length > 0
+    keys.each_with_index { |key, index|
+        if file_index_c[keys[index]] < max
+            next
+        end
+
+        filepath = file_index[keys[index]][0]
+
+        if !File.exists?(filepath)
+            next
+        end
+
+        file = File.open(filepath)
+        content = file.read
+
+        puts "#{content} #{file_index_c[keys[index]]}"
+    }
+else
+    puts "No file duplication"
+end
